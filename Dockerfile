@@ -1,4 +1,4 @@
-FROM coredns/coredns:1.12.0
+FROM coredns/coredns:1.12.1
 FROM envoyproxy/envoy:v1.30.2
 COPY --chown=10001:0 --from=0 /coredns /usr/bin/coredns
 ADD --chown=10001:0 CoreDNSFile /CoreDNSFile
