@@ -9,12 +9,6 @@ metadata:
     app.kubernetes.io/managed-by: 'saasDeployer'
     deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
   annotations:
-    {{ if .Values.INTERNAL_TLS_ENABLED }}
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    nginx.ingress.kubernetes.io/proxy-ssl-verify: 'on'
-    nginx.ingress.kubernetes.io/proxy-ssl-name: '{{ .Values.PUBLIC_SERVICE_NAME }}.{{ .Values.NAMESPACE }}.svc.cluster.local'
-    nginx.ingress.kubernetes.io/proxy-ssl-secret: '{{ .Values.NAMESPACE }}/{{ .Values.PUBLIC_SERVICE }}-tls'
-    {{ end }}
     {{ if .Values.X509_AUTHENTICATION_ENABLED }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
     nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
@@ -47,7 +41,7 @@ spec:
                 service:
                   name: '{{ .Values.PUBLIC_SERVICE_NAME }}'
                   port:
-                    name: {{ if .Values.INTERNAL_TLS_ENABLED }} tls {{ else }} web {{ end }}
+                    name: web
 ---
 {{ if eq .Values.GATEWAY_GRPC_INGRESS_ENABLED true }}
 apiVersion: networking.k8s.io/v1
@@ -117,12 +111,6 @@ metadata:
     app.kubernetes.io/managed-by: 'saasDeployer'
     deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
   annotations:
-    {{ if .Values.INTERNAL_TLS_ENABLED }}
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    nginx.ingress.kubernetes.io/proxy-ssl-verify: 'on'
-    nginx.ingress.kubernetes.io/proxy-ssl-name: '{{ .Values.PRIVATE_SERVICE_NAME }}.{{ .Values.NAMESPACE }}.svc.cluster.local'
-    nginx.ingress.kubernetes.io/proxy-ssl-secret: '{{ .Values.NAMESPACE }}/{{ .Values.PRIVATE_SERVICE }}-tls'
-    {{ end }}
     {{ if .Values.X509_AUTHENTICATION_ENABLED }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
     nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
@@ -152,7 +140,7 @@ spec:
                 service:
                   name: '{{ .Values.PRIVATE_SERVICE_NAME }}'
                   port:
-                    name: {{ if .Values.INTERNAL_TLS_ENABLED }} tls {{ else }} web {{ end }}
+                    name: web
 ---
 {{ if .Values.DC_PRIVATE_GW_UMBRELLA_URL }}
 apiVersion: networking.k8s.io/v1
@@ -164,12 +152,6 @@ metadata:
     app.kubernetes.io/managed-by: 'saasDeployer'
     deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
   annotations:
-    {{ if .Values.INTERNAL_TLS_ENABLED }}
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    nginx.ingress.kubernetes.io/proxy-ssl-verify: 'on'
-    nginx.ingress.kubernetes.io/proxy-ssl-name: '{{ .Values.PRIVATE_SERVICE_NAME }}.{{ .Values.NAMESPACE }}.svc.cluster.local'
-    nginx.ingress.kubernetes.io/proxy-ssl-secret: '{{ .Values.NAMESPACE }}/{{ .Values.PRIVATE_SERVICE }}-tls'
-    {{ end }}
     {{ if .Values.X509_AUTHENTICATION_ENABLED }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
     nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
@@ -192,7 +174,7 @@ spec:
                 service:
                   name: '{{ .Values.PRIVATE_SERVICE_NAME }}'
                   port:
-                    name: {{ if .Values.INTERNAL_TLS_ENABLED }} tls {{ else }} web {{ end }}
+                    name: web
 {{ end }}
 ---
 {{ if .Values.DC_PUBLIC_GW_UMBRELLA_URL }}
@@ -205,12 +187,6 @@ metadata:
     app.kubernetes.io/managed-by: 'saasDeployer'
     deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
   annotations:
-    {{ if .Values.INTERNAL_TLS_ENABLED }}
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    nginx.ingress.kubernetes.io/proxy-ssl-verify: 'on'
-    nginx.ingress.kubernetes.io/proxy-ssl-name: '{{ .Values.PUBLIC_SERVICE_NAME }}.{{ .Values.NAMESPACE }}.svc.cluster.local'
-    nginx.ingress.kubernetes.io/proxy-ssl-secret: '{{ .Values.NAMESPACE }}/{{ .Values.PUBLIC_SERVICE }}-tls'
-    {{ end }}
     {{ if .Values.X509_AUTHENTICATION_ENABLED }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
     nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
@@ -233,7 +209,7 @@ spec:
                 service:
                   name: '{{ .Values.PUBLIC_SERVICE_NAME }}'
                   port:
-                    name: {{ if .Values.INTERNAL_TLS_ENABLED }} tls {{ else }} web {{ end }}
+                    name: web
 {{ end }}
 {{ else }}
 apiVersion: extensions/v1beta1
@@ -245,12 +221,6 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        {{ if .Values.INTERNAL_TLS_ENABLED }}
-        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-        nginx.ingress.kubernetes.io/proxy-ssl-verify: 'on'
-        nginx.ingress.kubernetes.io/proxy-ssl-name: '{{ .Values.PUBLIC_SERVICE_NAME }}.{{ .Values.NAMESPACE }}.svc.cluster.local'
-        nginx.ingress.kubernetes.io/proxy-ssl-secret: '{{ .Values.NAMESPACE }}/{{ .Values.PUBLIC_SERVICE }}-tls'
-        {{ end }}
         {{ if .Values.X509_AUTHENTICATION_ENABLED }}
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
         nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
@@ -279,7 +249,7 @@ spec:
             paths:
             -   path: /
                 backend:
-                    servicePort: {{ if .Values.INTERNAL_TLS_ENABLED }} tls {{ else }} web {{ end }}
+                    servicePort: web
                     serviceName: '{{ .Values.PUBLIC_SERVICE_NAME }}'
 
 ---
@@ -292,12 +262,6 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        {{ if .Values.INTERNAL_TLS_ENABLED }}
-        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-        nginx.ingress.kubernetes.io/proxy-ssl-verify: 'on'
-        nginx.ingress.kubernetes.io/proxy-ssl-name: '{{ .Values.PRIVATE_SERVICE_NAME }}.{{ .Values.NAMESPACE }}.svc.cluster.local'
-        nginx.ingress.kubernetes.io/proxy-ssl-secret: '{{ .Values.NAMESPACE }}/{{ .Values.PRIVATE_SERVICE }}-tls'
-        {{ end }}
         {{ if .Values.X509_AUTHENTICATION_ENABLED }}
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
         nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
@@ -323,7 +287,7 @@ spec:
             paths:
             -   path: /
                 backend:
-                    servicePort: {{ if .Values.INTERNAL_TLS_ENABLED }} tls {{ else }} web {{ end }}
+                    servicePort: web
                     serviceName: '{{ .Values.PRIVATE_SERVICE_NAME }}'
 ---
 {{ if eq .Values.GATEWAY_GRPC_INGRESS_ENABLED true }}
@@ -388,12 +352,6 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        {{ if .Values.INTERNAL_TLS_ENABLED }}
-        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-        nginx.ingress.kubernetes.io/proxy-ssl-verify: 'on'
-        nginx.ingress.kubernetes.io/proxy-ssl-name: '{{ .Values.PRIVATE_SERVICE_NAME }}.{{ .Values.NAMESPACE }}.svc.cluster.local'
-        nginx.ingress.kubernetes.io/proxy-ssl-secret: '{{ .Values.NAMESPACE }}/{{ .Values.PRIVATE_SERVICE }}-tls'
-        {{ end }}
         {{ if .Values.X509_AUTHENTICATION_ENABLED }}
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
         nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
@@ -412,7 +370,7 @@ spec:
             paths:
             -   path: /
                 backend:
-                    servicePort: {{ if .Values.INTERNAL_TLS_ENABLED }} tls {{ else }} web {{ end }}
+                    servicePort: web
                     serviceName: '{{ .Values.PRIVATE_SERVICE_NAME }}'
 {{ end }}
 ---
@@ -426,12 +384,6 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        {{ if .Values.INTERNAL_TLS_ENABLED }}
-        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-        nginx.ingress.kubernetes.io/proxy-ssl-verify: 'on'
-        nginx.ingress.kubernetes.io/proxy-ssl-name: '{{ .Values.PUBLIC_SERVICE_NAME }}.{{ .Values.NAMESPACE }}.svc.cluster.local'
-        nginx.ingress.kubernetes.io/proxy-ssl-secret: '{{ .Values.NAMESPACE }}/{{ .Values.PUBLIC_SERVICE }}-tls'
-        {{ end }}
         {{ if .Values.X509_AUTHENTICATION_ENABLED }}
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
         nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
@@ -450,7 +402,7 @@ spec:
             paths:
             -   path: /
                 backend:
-                    servicePort: {{ if .Values.INTERNAL_TLS_ENABLED }} tls {{ else }} web {{ end }}
+                    servicePort: web
                     serviceName: '{{ .Values.PUBLIC_SERVICE_NAME }}'
 {{ end }}
 {{ end }}

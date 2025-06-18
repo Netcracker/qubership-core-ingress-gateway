@@ -1,5 +1,4 @@
 # ============== DEPLOYMENT VARIABLES ============================
-INTERNAL_TLS_ENABLED: false
 MONITORING_ENABLED: true
 CLOUD_TOPOLOGY_KEY: kubernetes.io/hostname
 READONLY_CONTAINER_FILE_SYSTEM_ENABLED: false

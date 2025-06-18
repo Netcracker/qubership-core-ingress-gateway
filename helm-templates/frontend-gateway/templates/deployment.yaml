@@ -57,11 +57,6 @@ spec:
             -   name: '{{ .Values.SSL_SECRET }}'
                 secret:
                     secretName: '{{ .Values.SSL_SECRET }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-            -   name: tls
-                secret:
-                  secretName: '{{ .Values.INTERNAL_SERVICE }}-tls'
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -72,11 +67,6 @@ spec:
                 volumeMounts:
                 -   name: '{{ .Values.SSL_SECRET }}'
                     mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    mountPath: '/etc/tls'
-                    readOnly: true
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -90,11 +80,6 @@ spec:
                 -   name: admin
                     containerPort: 9901
                     protocol: TCP
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    containerPort: 8443
-                    protocol: TCP
-{{ end }}
                 env:
                 -   name: SERVICE_NAME_VARIABLE
                     value: '{{ .Values.INTERNAL_SERVICE_NAME }}'
@@ -126,15 +111,6 @@ spec:
                     value: '{{ .Values.XDS_CLUSTER_PORT }}'
                 -   name: RUN_COREDNS
                     value: '{{ .Values.RUN_COREDNS }}'
-                -   name: INTERNAL_TLS_ENABLED
-                    value: '{{ .Values.INTERNAL_TLS_ENABLED }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: CERTIFICATE_FILE_PASSWORD
-                    valueFrom:
-                      secretKeyRef:
-                        name: 'tls-password-secret'
-                        key: 'tls-password'
-{{ end }}
                 -   name: FACADE_GATEWAY
                     value: '{{ .Values.FACADE_GATEWAY }}'
                 resources:
@@ -254,11 +230,6 @@ spec:
             -   name: '{{ .Values.SSL_SECRET }}'
                 secret:
                     secretName: '{{ .Values.SSL_SECRET }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-            -   name: tls
-                secret:
-                  secretName: '{{ .Values.PRIVATE_SERVICE }}-tls'
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -269,11 +240,6 @@ spec:
                 volumeMounts:
                 -   name: '{{ .Values.SSL_SECRET }}'
                     mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    mountPath: '/etc/tls'
-                    readOnly: true
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -287,11 +253,6 @@ spec:
                 -   name: admin
                     containerPort: 9901
                     protocol: TCP
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    containerPort: 8443
-                    protocol: TCP
-{{ end }}
                 env:
                 -   name: SERVICE_NAME_VARIABLE
                     value: '{{ .Values.PRIVATE_SERVICE_NAME }}'
@@ -323,15 +284,6 @@ spec:
                     value: '{{ .Values.XDS_CLUSTER_PORT }}'
                 -   name: RUN_COREDNS
                     value: '{{ .Values.RUN_COREDNS }}'
-                -   name: INTERNAL_TLS_ENABLED
-                    value: '{{ .Values.INTERNAL_TLS_ENABLED }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: CERTIFICATE_FILE_PASSWORD
-                    valueFrom:
-                      secretKeyRef:
-                        name: 'tls-password-secret'
-                        key: 'tls-password'
-{{ end }}
                 resources:
                     requests:
                         cpu: '{{ .Values.CPU_REQUEST }}'
@@ -448,11 +400,6 @@ spec:
             -   name: '{{ .Values.SSL_SECRET }}'
                 secret:
                     secretName: '{{ .Values.SSL_SECRET }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-            -   name: tls
-                secret:
-                  secretName: '{{ .Values.PUBLIC_SERVICE }}-tls'
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -463,11 +410,6 @@ spec:
                 volumeMounts:
                 -   name: '{{ .Values.SSL_SECRET }}'
                     mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    mountPath: '/etc/tls'
-                    readOnly: true
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -481,11 +423,6 @@ spec:
                 -   name: admin
                     containerPort: 9901
                     protocol: TCP
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    containerPort: 8443
-                    protocol: TCP
-{{ end }}
                 env:
                 -   name: SERVICE_NAME_VARIABLE
                     value: '{{ .Values.PUBLIC_SERVICE_NAME }}'
@@ -517,15 +454,6 @@ spec:
                     value: '{{ .Values.XDS_CLUSTER_PORT }}'
                 -   name: RUN_COREDNS
                     value: '{{ .Values.RUN_COREDNS }}'
-                -   name: INTERNAL_TLS_ENABLED
-                    value: '{{ .Values.INTERNAL_TLS_ENABLED }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: CERTIFICATE_FILE_PASSWORD
-                    valueFrom:
-                      secretKeyRef:
-                        name: 'tls-password-secret'
-                        key: 'tls-password'
-{{ end }}
                 resources:
                     requests:
                         cpu: '{{ .Values.CPU_REQUEST }}'
