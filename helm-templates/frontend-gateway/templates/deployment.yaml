@@ -54,9 +54,6 @@ spec:
                 app.kubernetes.io/technology: 'cpp'
         spec:
             volumes:
-            -   name: '{{ .Values.SSL_SECRET }}'
-                secret:
-                    secretName: '{{ .Values.SSL_SECRET }}'
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -65,8 +62,6 @@ spec:
             -   name: '{{ .Values.INTERNAL_SERVICE }}'
                 image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
                 volumeMounts:
-                -   name: '{{ .Values.SSL_SECRET }}'
-                    mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -85,8 +80,6 @@ spec:
                     value: '{{ .Values.INTERNAL_SERVICE_NAME }}'
                 -   name: LOG_LEVEL
                     value: '{{ lower .Values.LOG_LEVEL }}'
-                -   name: CERTIFICATE_BUNDLE_{{ .Values.SSL_SECRET }}_MD5SUM
-                    value: '{{ .Values.CERTIFICATE_BUNDLE_MD5SUM }}'
                 -   name: CLOUD_NAMESPACE
                     valueFrom:
                         fieldRef:
@@ -227,9 +220,6 @@ spec:
                 app.kubernetes.io/technology: 'cpp'
         spec:
             volumes:
-            -   name: '{{ .Values.SSL_SECRET }}'
-                secret:
-                    secretName: '{{ .Values.SSL_SECRET }}'
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -238,8 +228,6 @@ spec:
             -   name: '{{ .Values.PRIVATE_SERVICE }}'
                 image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
                 volumeMounts:
-                -   name: '{{ .Values.SSL_SECRET }}'
-                    mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -258,8 +246,6 @@ spec:
                     value: '{{ .Values.PRIVATE_SERVICE_NAME }}'
                 -   name: LOG_LEVEL
                     value: '{{ lower .Values.LOG_LEVEL }}'
-                -   name: CERTIFICATE_BUNDLE_{{ .Values.SSL_SECRET }}_MD5SUM
-                    value: '{{ .Values.CERTIFICATE_BUNDLE_MD5SUM }}'
                 -   name: CLOUD_NAMESPACE
                     valueFrom:
                         fieldRef:
@@ -397,9 +383,6 @@ spec:
                 app.kubernetes.io/technology: 'cpp'
         spec:
             volumes:
-            -   name: '{{ .Values.SSL_SECRET }}'
-                secret:
-                    secretName: '{{ .Values.SSL_SECRET }}'
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -408,8 +391,6 @@ spec:
             -   name: '{{ .Values.PUBLIC_SERVICE }}'
                 image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
                 volumeMounts:
-                -   name: '{{ .Values.SSL_SECRET }}'
-                    mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -428,8 +409,6 @@ spec:
                     value: '{{ .Values.PUBLIC_SERVICE_NAME }}'
                 -   name: LOG_LEVEL
                     value: '{{ lower .Values.LOG_LEVEL }}'
-                -   name: CERTIFICATE_BUNDLE_{{ .Values.SSL_SECRET }}_MD5SUM
-                    value: '{{ .Values.CERTIFICATE_BUNDLE_MD5SUM }}'
                 -   name: CLOUD_NAMESPACE
                     valueFrom:
                         fieldRef:
