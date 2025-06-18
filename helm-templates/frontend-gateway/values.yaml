@@ -3,6 +3,7 @@ INTERNAL_TLS_ENABLED: false
 MONITORING_ENABLED: true
 CLOUD_TOPOLOGY_KEY: kubernetes.io/hostname
 READONLY_CONTAINER_FILE_SYSTEM_ENABLED: false
+IMAGE_REPOSITORY: 'ghcr.io/netcracker/qubership-core-ingress-gateway'
 
 HEALTHCHECK_PATH: "/ready"
 READINESS_PATH: "/ready"
