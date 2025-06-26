@@ -37,7 +37,6 @@ if [ -f "/sys/fs/cgroup/memory/memory.memsw.limit_in_bytes" ] && [ $( cat /sys/f
   echo "Max Heap size is set in if chain"
 elif [ -f "/sys/fs/cgroup/memory.max" ] && [ $( cat /sys/fs/cgroup/memory.max) -gt ${delta} ]; then
   max_heap_size_bytes=$(($(cat /sys/fs/cgroup/memory.max)-delta))
-  echo "Max Heap size is set in elseif chain"
 else
   max_heap_size_bytes=$(($(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)-delta))
   echo "Max Heap size is set in else chain"
@@ -45,8 +44,8 @@ fi
 if check_max_heap_size ${max_heap_size_bytes}; then
   export MAX_HEAP_SIZE_BYTES=${max_heap_size_bytes}
 else
-  echo "Can not calculate memory limits for container"
-  return 1
+  echo "Can not calculate memory limits for container, set heap_size to 128Mb"
+  export MAX_HEAP_SIZE_BYTES=128000000
 fi
 echo "Max Heap size is set to $MAX_HEAP_SIZE_BYTES bytes"
 export TRACING_ENABLED=${TRACING_ENABLED:=false}
