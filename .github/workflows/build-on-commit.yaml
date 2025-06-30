@@ -18,4 +18,4 @@ jobs:
     needs: tag
     with:
       artifact-id: ${{ github.event.repository.name }}
-      tags: "${{github.ref_name}}-${{ needs.tag.outputs.name }}"
+      tags: "${{github.ref_name}}-${{ needs.tag.outputs.name }}, ${{github.ref_name}}-snapshot"
