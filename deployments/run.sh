@@ -44,8 +44,12 @@ fi
 if check_max_heap_size ${max_heap_size_bytes}; then
   export MAX_HEAP_SIZE_BYTES=${max_heap_size_bytes}
 else
-  echo "Can not calculate memory limits for container, set heap_size to 128Mb"
-  export MAX_HEAP_SIZE_BYTES=128000000
+  echo "Can not calculate memory limits for container, check if tests mode used"
+  if check_max_heap_size ${MAX_HEAP_SIZE_FOR_TEST}; then
+    export MAX_HEAP_SIZE_BYTES=${MAX_HEAP_SIZE_FOR_TEST}
+  else
+    return 1
+  fi
 fi
 echo "Max Heap size is set to $MAX_HEAP_SIZE_BYTES bytes"
 export TRACING_ENABLED=${TRACING_ENABLED:=false}
