@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
 
+check_max_heap_size() {
+  local num="$1"
+  local MAX_INT64=9223372036854775807
+
+  if ! [[ "$num" =~ ^[+-]?[0-9]+$ ]]; then
+    echo "Error: '$num' is not a valid integer."
+    return 1
+  fi
+
+  if (( num > 0 && num <= MAX_INT64 )); then
+    return 0
+  else
+    echo "'$num' is outside the int64 range or negative"
+    return 1
+  fi
+}
+
+
 export GRACE_PERIOD_S=${GW_TERMINATION_GRACE_PERIOD_S:=60}
 # This is a local duration of drain before killing envoy process.
 # We subtract 10 seconds because stopping of envoy should happen before reaching global GW_TERMINATION_GRACE_PERIOD_S.
@@ -14,12 +32,22 @@ cp /envoy/envoy.yaml $config_file
 
 # read bytes from cgroup and subtract 10 mb for container docker usage
 delta=10485760
-if [ -f "/sys/fs/cgroup/memory/memory.memsw.limit_in_bytes" ]; then
-  export MAX_HEAP_SIZE_BYTES=$(($(cat /sys/fs/cgroup/memory/memory.memsw.limit_in_bytes)-delta))
-elif [ -f "/sys/fs/cgroup/memory.max" ]; then
-  export MAX_HEAP_SIZE_BYTES=$(($(cat /sys/fs/cgroup/memory.max)-delta))
+if [ -f "/sys/fs/cgroup/memory/memory.memsw.limit_in_bytes" ] && [ $( cat /sys/fs/cgroup/memory/memory.memsw.limit_in_bytes) -gt ${delta} ]; then
+  max_heap_size_bytes=$(($(cat /sys/fs/cgroup/memory/memory.memsw.limit_in_bytes)-delta))
+elif [ -f "/sys/fs/cgroup/memory.max" ] && [ $( cat /sys/fs/cgroup/memory.max) -gt ${delta} ]; then
+  max_heap_size_bytes=$(($(cat /sys/fs/cgroup/memory.max)-delta))
 else
-  export MAX_HEAP_SIZE_BYTES=$(($(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)-delta))
+  max_heap_size_bytes=$(($(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)-delta))
+fi
+if check_max_heap_size ${max_heap_size_bytes}; then
+  export MAX_HEAP_SIZE_BYTES=${max_heap_size_bytes}
+else
+  echo "Can not calculate memory limits for container, check if tests mode used"
+  if check_max_heap_size ${MAX_HEAP_SIZE_FOR_TEST}; then
+    export MAX_HEAP_SIZE_BYTES=${MAX_HEAP_SIZE_FOR_TEST}
+  else
+    return 1
+  fi
 fi
 echo "Max Heap size is set to $MAX_HEAP_SIZE_BYTES bytes"
 export TRACING_ENABLED=${TRACING_ENABLED:=false}
