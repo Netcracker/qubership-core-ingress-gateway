@@ -34,12 +34,10 @@ cp /envoy/envoy.yaml $config_file
 delta=10485760
 if [ -f "/sys/fs/cgroup/memory/memory.memsw.limit_in_bytes" ] && [ $( cat /sys/fs/cgroup/memory/memory.memsw.limit_in_bytes) -gt ${delta} ]; then
   max_heap_size_bytes=$(($(cat /sys/fs/cgroup/memory/memory.memsw.limit_in_bytes)-delta))
-  echo "Max Heap size is set in if chain"
 elif [ -f "/sys/fs/cgroup/memory.max" ] && [ $( cat /sys/fs/cgroup/memory.max) -gt ${delta} ]; then
   max_heap_size_bytes=$(($(cat /sys/fs/cgroup/memory.max)-delta))
 else
   max_heap_size_bytes=$(($(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)-delta))
-  echo "Max Heap size is set in else chain"
 fi
 if check_max_heap_size ${max_heap_size_bytes}; then
   export MAX_HEAP_SIZE_BYTES=${max_heap_size_bytes}
