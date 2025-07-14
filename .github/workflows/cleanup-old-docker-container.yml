@@ -17,7 +17,7 @@ on:
         excluded-tags:
           description: "Tags to exclude from deletion"
           required: false
-          default: "latest,release*,*.*"
+          default: "main-snapshot,latest,release*,*.*"
         dry-run:
           description: "Enable dry-run mode"
           required: false
