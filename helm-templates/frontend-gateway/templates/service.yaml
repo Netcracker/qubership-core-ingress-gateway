@@ -16,11 +16,6 @@ spec:
     -   name: web
         port: 8080
         targetPort: 8080
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-    -   name: tls
-        port: 8443
-        targetPort: 8443
-{{ end }}
     selector:
         name: '{{ .Values.INTERNAL_SERVICE }}'
   {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
@@ -45,11 +40,6 @@ spec:
     -   name: web
         port: 8080
         targetPort: 8080
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-    -   name: tls
-        port: 8443
-        targetPort: 8443
-{{ end }}
     selector:
         name: '{{ .Values.PRIVATE_SERVICE }}'
   {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
@@ -76,11 +66,6 @@ spec:
     -   name: web
         port: 8080
         targetPort: 8080
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-    -   name: tls
-        port: 8443
-        targetPort: 8443
-{{ end }}
     selector:
         name: '{{ .Values.PUBLIC_SERVICE }}'
   {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}

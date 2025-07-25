@@ -386,16 +386,6 @@
       "internal": true,
       "title": "The RUN_COREDNS schema"
     },
-    "INTERNAL_TLS_ENABLED": {
-      "$id": "#/properties/INTERNAL_TLS_ENABLED",
-      "$ref": "#/definitions/booleanOrString",
-      "description": "Is TLS enabled",
-      "examples": [
-        false
-      ],
-      "internal": true,
-      "title": "The INTERNAL_TLS_ENABLED schema"
-    },
     "X509_AUTHENTICATION_ENABLED": {
       "$id": "#/properties/X509_AUTHENTICATION_ENABLED",
       "$ref": "#/definitions/booleanOrString",
