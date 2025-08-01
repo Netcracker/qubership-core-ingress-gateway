@@ -1,8 +1,9 @@
 # ============== DEPLOYMENT VARIABLES ============================
-INTERNAL_TLS_ENABLED: false
 MONITORING_ENABLED: true
 CLOUD_TOPOLOGY_KEY: kubernetes.io/hostname
 READONLY_CONTAINER_FILE_SYSTEM_ENABLED: false
+IMAGE_REPOSITORY: 'ghcr.io/netcracker/qubership-core-ingress-gateway'
+SERVICE_NAME: ingress-gateway
 
 HEALTHCHECK_PATH: "/ready"
 READINESS_PATH: "/ready"
@@ -34,7 +35,7 @@ TRACING_HOST: 'nc-diagnostic-agent'
 
 IP_STACK: "v4"
 ENVOY_UID: '0'
-XDS_CLUSTER_HOST: control-plane-internal
+XDS_CLUSTER_HOST: control-plane
 XDS_CLUSTER_PORT: 15010
 RUN_COREDNS: false
 FACADE_GATEWAY: false

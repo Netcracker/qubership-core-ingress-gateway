@@ -54,14 +54,6 @@ spec:
                 app.kubernetes.io/technology: 'cpp'
         spec:
             volumes:
-            -   name: '{{ .Values.SSL_SECRET }}'
-                secret:
-                    secretName: '{{ .Values.SSL_SECRET }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-            -   name: tls
-                secret:
-                  secretName: '{{ .Values.INTERNAL_SERVICE }}-tls'
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -70,13 +62,6 @@ spec:
             -   name: '{{ .Values.INTERNAL_SERVICE }}'
                 image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
                 volumeMounts:
-                -   name: '{{ .Values.SSL_SECRET }}'
-                    mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    mountPath: '/etc/tls'
-                    readOnly: true
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -90,18 +75,11 @@ spec:
                 -   name: admin
                     containerPort: 9901
                     protocol: TCP
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    containerPort: 8443
-                    protocol: TCP
-{{ end }}
                 env:
                 -   name: SERVICE_NAME_VARIABLE
                     value: '{{ .Values.INTERNAL_SERVICE_NAME }}'
                 -   name: LOG_LEVEL
                     value: '{{ lower .Values.LOG_LEVEL }}'
-                -   name: CERTIFICATE_BUNDLE_{{ .Values.SSL_SECRET }}_MD5SUM
-                    value: '{{ .Values.CERTIFICATE_BUNDLE_MD5SUM }}'
                 -   name: CLOUD_NAMESPACE
                     valueFrom:
                         fieldRef:
@@ -126,15 +104,6 @@ spec:
                     value: '{{ .Values.XDS_CLUSTER_PORT }}'
                 -   name: RUN_COREDNS
                     value: '{{ .Values.RUN_COREDNS }}'
-                -   name: INTERNAL_TLS_ENABLED
-                    value: '{{ .Values.INTERNAL_TLS_ENABLED }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: CERTIFICATE_FILE_PASSWORD
-                    valueFrom:
-                      secretKeyRef:
-                        name: 'tls-password-secret'
-                        key: 'tls-password'
-{{ end }}
                 -   name: FACADE_GATEWAY
                     value: '{{ .Values.FACADE_GATEWAY }}'
                 resources:
@@ -251,14 +220,6 @@ spec:
                 app.kubernetes.io/technology: 'cpp'
         spec:
             volumes:
-            -   name: '{{ .Values.SSL_SECRET }}'
-                secret:
-                    secretName: '{{ .Values.SSL_SECRET }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-            -   name: tls
-                secret:
-                  secretName: '{{ .Values.PRIVATE_SERVICE }}-tls'
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -267,13 +228,6 @@ spec:
             -   name: '{{ .Values.PRIVATE_SERVICE }}'
                 image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
                 volumeMounts:
-                -   name: '{{ .Values.SSL_SECRET }}'
-                    mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    mountPath: '/etc/tls'
-                    readOnly: true
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -287,18 +241,11 @@ spec:
                 -   name: admin
                     containerPort: 9901
                     protocol: TCP
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    containerPort: 8443
-                    protocol: TCP
-{{ end }}
                 env:
                 -   name: SERVICE_NAME_VARIABLE
                     value: '{{ .Values.PRIVATE_SERVICE_NAME }}'
                 -   name: LOG_LEVEL
                     value: '{{ lower .Values.LOG_LEVEL }}'
-                -   name: CERTIFICATE_BUNDLE_{{ .Values.SSL_SECRET }}_MD5SUM
-                    value: '{{ .Values.CERTIFICATE_BUNDLE_MD5SUM }}'
                 -   name: CLOUD_NAMESPACE
                     valueFrom:
                         fieldRef:
@@ -323,15 +270,6 @@ spec:
                     value: '{{ .Values.XDS_CLUSTER_PORT }}'
                 -   name: RUN_COREDNS
                     value: '{{ .Values.RUN_COREDNS }}'
-                -   name: INTERNAL_TLS_ENABLED
-                    value: '{{ .Values.INTERNAL_TLS_ENABLED }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: CERTIFICATE_FILE_PASSWORD
-                    valueFrom:
-                      secretKeyRef:
-                        name: 'tls-password-secret'
-                        key: 'tls-password'
-{{ end }}
                 resources:
                     requests:
                         cpu: '{{ .Values.CPU_REQUEST }}'
@@ -445,14 +383,6 @@ spec:
                 app.kubernetes.io/technology: 'cpp'
         spec:
             volumes:
-            -   name: '{{ .Values.SSL_SECRET }}'
-                secret:
-                    secretName: '{{ .Values.SSL_SECRET }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-            -   name: tls
-                secret:
-                  secretName: '{{ .Values.PUBLIC_SERVICE }}-tls'
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             -   name: config
                 emptyDir: {}
@@ -461,13 +391,6 @@ spec:
             -   name: '{{ .Values.PUBLIC_SERVICE }}'
                 image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
                 volumeMounts:
-                -   name: '{{ .Values.SSL_SECRET }}'
-                    mountPath: /tmp/cert/{{ .Values.SSL_SECRET }}
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    mountPath: '/etc/tls'
-                    readOnly: true
-{{ end }}
 {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
                 -   name: config
                     mountPath: /envoy/config
@@ -481,18 +404,11 @@ spec:
                 -   name: admin
                     containerPort: 9901
                     protocol: TCP
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: tls
-                    containerPort: 8443
-                    protocol: TCP
-{{ end }}
                 env:
                 -   name: SERVICE_NAME_VARIABLE
                     value: '{{ .Values.PUBLIC_SERVICE_NAME }}'
                 -   name: LOG_LEVEL
                     value: '{{ lower .Values.LOG_LEVEL }}'
-                -   name: CERTIFICATE_BUNDLE_{{ .Values.SSL_SECRET }}_MD5SUM
-                    value: '{{ .Values.CERTIFICATE_BUNDLE_MD5SUM }}'
                 -   name: CLOUD_NAMESPACE
                     valueFrom:
                         fieldRef:
@@ -517,15 +433,6 @@ spec:
                     value: '{{ .Values.XDS_CLUSTER_PORT }}'
                 -   name: RUN_COREDNS
                     value: '{{ .Values.RUN_COREDNS }}'
-                -   name: INTERNAL_TLS_ENABLED
-                    value: '{{ .Values.INTERNAL_TLS_ENABLED }}'
-{{ if .Values.INTERNAL_TLS_ENABLED }}
-                -   name: CERTIFICATE_FILE_PASSWORD
-                    valueFrom:
-                      secretKeyRef:
-                        name: 'tls-password-secret'
-                        key: 'tls-password'
-{{ end }}
                 resources:
                     requests:
                         cpu: '{{ .Values.CPU_REQUEST }}'
