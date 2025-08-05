@@ -24,8 +24,6 @@ export GRACE_PERIOD_S=${GW_TERMINATION_GRACE_PERIOD_S:=60}
 # Global GW_TERMINATION_GRACE_PERIOD_S is that period after which Kubernetes forced stops the pod.
 let DRAIN_TIME_S=${GRACE_PERIOD_S}-10
 
-export INTERNAL_TLS_ENABLED=${INTERNAL_TLS_ENABLED:=false}
-echo "INTERNAL_TLS_ENABLED: '$INTERNAL_TLS_ENABLED'"
 config_file='/envoy/config/envoy.yaml'
 echo "config_file: '$config_file'"
 cp /envoy/envoy.yaml $config_file
