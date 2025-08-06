@@ -4,18 +4,7 @@ on:
   - push
 
 jobs:
-  tag:
-    name: Construct tag name
-    runs-on: ubuntu-latest
-    steps:
-      - id: tag
-        run: echo "name=$(date +'%Y%m%d%H%M%S')-${{ github.run_number }}" >> $GITHUB_OUTPUT
-    outputs:
-      name: ${{ steps.tag.outputs.name }}
-
-  call-docker-publish:
-    uses: netcracker/qubership-workflow-hub/.github/workflows/docker-publish.yml@main
-    needs: tag
+  docker-build:
+    uses: netcracker/qubership-core-infra/.github/workflows/docker-build.yaml@v1.0.7
     with:
-      artifact-id: ${{ github.event.repository.name }}
-      tags: "${{github.ref_name}}-${{ needs.tag.outputs.name }}, ${{github.ref_name}}-snapshot"
+      dry-run: false

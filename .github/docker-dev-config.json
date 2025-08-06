@@ -1,0 +1,10 @@
+{
+  "components" : [
+    {
+      "name": "qubership-core-ingress-gateway",
+      "file": "Dockerfile",
+      "context": "."
+    }
+  ],
+  "platforms" : "linux/amd64"
+}
