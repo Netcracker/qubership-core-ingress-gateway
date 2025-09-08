@@ -54,18 +54,18 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-{{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+      {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
       - name: config
         emptyDir: {}
-{{ end }}
+      {{ end }}
       containers:
       - name: '{{ .Values.INTERNAL_SERVICE }}'
         image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
         volumeMounts:
-{{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+          {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
           - name: config
             mountPath: /envoy/config
-{{ end }}
+          {{ end }}
           args:
           - /envoy/run.sh
           ports:
@@ -130,9 +130,9 @@ spec:
             periodSeconds: 2
             failureThreshold: 15
           securityContext:
-{{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+            {{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
             runAsGroup: 10001
-{{ end }}
+            {{ end }}
             readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             runAsNonRoot: true
             seccompProfile:
@@ -142,23 +142,23 @@ spec:
               drop:
                 - ALL
       topologySpreadConstraints:
-{{- if .Values.CLOUD_TOPOLOGIES }}
-{{- range $v := .Values.CLOUD_TOPOLOGIES }}
+        {{- if .Values.CLOUD_TOPOLOGIES }}
+        {{- range $v := .Values.CLOUD_TOPOLOGIES }}
         - topologyKey: {{ $v.topologyKey }}
           maxSkew: {{ $v.maxSkew | default 1 }}
           whenUnsatisfiable: {{ $v.whenUnsatisfiable | default "ScheduleAnyway" }}
           labelSelector:
             matchLabels:
               name: "{{ $.Values.INTERNAL_SERVICE }}"
-{{- end }}
-{{- else }}
+        {{- end }}
+        {{- else }}
         - maxSkew: 1
           topologyKey: "{{ .Values.CLOUD_TOPOLOGY_KEY }}"
           whenUnsatisfiable: ScheduleAnyway
           labelSelector:
             matchLabels:
               name: "{{ .Values.INTERNAL_SERVICE }}"
-{{- end }}
+        {{- end }}
       terminationGracePeriodSeconds: {{ .Values.GW_TERMINATION_GRACE_PERIOD_S }}
   selector:
     matchLabels:
@@ -183,29 +183,29 @@ metadata:
 spec:
   replicas: {{ .Values.REPLICAS | default 1 }}
   strategy:
-  {{- if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "recreate" }}
+    {{- if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "recreate" }}
     type: Recreate
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "best_effort_controlled_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "best_effort_controlled_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 0
       maxUnavailable: 80%
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "ramped_slow_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "ramped_slow_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "custom_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "custom_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: {{ .Values.DEPLOYMENT_STRATEGY_MAXSURGE | default "25%" }}
       maxUnavailable: {{ .Values.DEPLOYMENT_STRATEGY_MAXUNAVAILABLE | default "25%" }}
-  {{- else }}
+    {{- else }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-  {{- end }}
+    {{- end }}
   template:
     metadata:
       labels:
@@ -219,18 +219,18 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-{{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+      {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
       - name: config
         emptyDir: {}
-{{ end }}
+      {{ end }}
       containers:
       - name: '{{ .Values.PRIVATE_SERVICE }}'
         image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
         volumeMounts:
-{{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+        {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
         - name: config
           mountPath: /envoy/config
-{{ end }}
+        {{ end }}
         args:
         - /envoy/run.sh
         ports:
@@ -293,9 +293,9 @@ spec:
           periodSeconds: 2
           failureThreshold: 15
         securityContext:
-{{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+          {{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
           runAsGroup: 10001
-{{ end }}
+          {{ end }}
           readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
           runAsNonRoot: true
           seccompProfile:
@@ -305,23 +305,23 @@ spec:
             drop:
               - ALL
       topologySpreadConstraints:
-{{- if .Values.CLOUD_TOPOLOGIES }}
-{{- range $v := .Values.CLOUD_TOPOLOGIES }}
+        {{- if .Values.CLOUD_TOPOLOGIES }}
+        {{- range $v := .Values.CLOUD_TOPOLOGIES }}
         - topologyKey: {{ $v.topologyKey }}
           maxSkew: {{ $v.maxSkew | default 1 }}
           whenUnsatisfiable: {{ $v.whenUnsatisfiable | default "ScheduleAnyway" }}
           labelSelector:
             matchLabels:
               name: "{{ $.Values.PRIVATE_SERVICE }}"
-{{- end }}
-{{- else }}
+        {{- end }}
+        {{- else }}
         - maxSkew: 1
           topologyKey: "{{ .Values.CLOUD_TOPOLOGY_KEY }}"
           whenUnsatisfiable: ScheduleAnyway
           labelSelector:
             matchLabels:
               name: "{{ .Values.PRIVATE_SERVICE }}"
-{{- end }}
+        {{- end }}
       terminationGracePeriodSeconds: {{ .Values.GW_TERMINATION_GRACE_PERIOD_S }}
   selector:
       matchLabels:
@@ -346,29 +346,29 @@ metadata:
 spec:
   replicas: {{ .Values.REPLICAS | default 1 }}
   strategy:
-  {{- if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "recreate" }}
+    {{- if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "recreate" }}
     type: Recreate
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "best_effort_controlled_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "best_effort_controlled_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 0
       maxUnavailable: 80%
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "ramped_slow_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "ramped_slow_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "custom_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "custom_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: {{ .Values.DEPLOYMENT_STRATEGY_MAXSURGE | default "25%" }}
       maxUnavailable: {{ .Values.DEPLOYMENT_STRATEGY_MAXUNAVAILABLE | default "25%" }}
-  {{- else }}
+    {{- else }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-  {{- end }}
+    {{- end }}
   template:
     metadata:
       labels:
@@ -382,18 +382,18 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-{{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+      {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
       - name: config
         emptyDir: {}
-{{ end }}
+      {{ end }}
       containers:
       - name: '{{ .Values.PUBLIC_SERVICE }}'
         image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
         volumeMounts:
-{{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+        {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
         - name: config
           mountPath: /envoy/config
-{{ end }}
+        {{ end }}
         args:
         - /envoy/run.sh
         ports:
@@ -456,9 +456,9 @@ spec:
           periodSeconds: 2
           failureThreshold: 15
         securityContext:
-{{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+          {{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
           runAsGroup: 10001
-{{ end }}
+          {{ end }}
           readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
           runAsNonRoot: true
           seccompProfile:
@@ -468,23 +468,23 @@ spec:
             drop:
               - ALL
       topologySpreadConstraints:
-{{- if .Values.CLOUD_TOPOLOGIES }}
-{{- range $v := .Values.CLOUD_TOPOLOGIES }}
+        {{- if .Values.CLOUD_TOPOLOGIES }}
+        {{- range $v := .Values.CLOUD_TOPOLOGIES }}
         - topologyKey: {{ $v.topologyKey }}
           maxSkew: {{ $v.maxSkew | default 1 }}
           whenUnsatisfiable: {{ $v.whenUnsatisfiable | default "ScheduleAnyway" }}
           labelSelector:
             matchLabels:
               name: "{{ $.Values.PUBLIC_SERVICE }}"
-{{- end }}
-{{- else }}
+        {{- end }}
+        {{- else }}
         - maxSkew: 1
           topologyKey: "{{ .Values.CLOUD_TOPOLOGY_KEY }}"
           whenUnsatisfiable: ScheduleAnyway
           labelSelector:
             matchLabels:
               name: "{{ .Values.PUBLIC_SERVICE }}"
-{{- end }}
+        {{- end }}
       terminationGracePeriodSeconds: {{ .Values.GW_TERMINATION_GRACE_PERIOD_S }}
   selector:
     matchLabels:
