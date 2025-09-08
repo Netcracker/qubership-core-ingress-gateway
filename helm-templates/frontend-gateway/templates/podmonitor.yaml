@@ -1,4 +1,4 @@
-{{ if .Values.MONITORING_ENABLED }}
+{{- if .Values.MONITORING_ENABLED }}
 ---
 kind: PodMonitor
 apiVersion: monitoring.coreos.com/v1
@@ -77,4 +77,4 @@ spec:
   selector:
     matchLabels:
       name: '{{ .Values.PUBLIC_SERVICE }}'
-{{ end }}
+{{- end }}

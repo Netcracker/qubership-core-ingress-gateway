@@ -18,9 +18,9 @@ spec:
     targetPort: 8080
   selector:
     name: '{{ .Values.INTERNAL_SERVICE }}'
-  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
   clusterIP: None
-  {{ end }}
+  {{- end }}
 ---
 kind: Service
 apiVersion: v1
@@ -41,9 +41,9 @@ spec:
     targetPort: 8080
   selector:
     name: '{{ .Values.PRIVATE_SERVICE }}'
-  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
   clusterIP: None
-  {{ end }}
+  {{- end }}
 ---
 kind: Service
 apiVersion: v1
@@ -67,6 +67,6 @@ spec:
     targetPort: 8080
   selector:
     name: '{{ .Values.PUBLIC_SERVICE }}'
-  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
   clusterIP: None
-  {{ end }}
+  {{- end }}

@@ -54,18 +54,18 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-      {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+      {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
       - name: config
         emptyDir: {}
-      {{ end }}
+      {{- end }}
       containers:
       - name: '{{ .Values.INTERNAL_SERVICE }}'
         image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
         volumeMounts:
-          {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+          {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
           - name: config
             mountPath: /envoy/config
-          {{ end }}
+          {{- end }}
           args:
           - /envoy/run.sh
           ports:
@@ -130,9 +130,9 @@ spec:
             periodSeconds: 2
             failureThreshold: 15
           securityContext:
-            {{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+            {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
             runAsGroup: 10001
-            {{ end }}
+            {{- end }}
             readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
             runAsNonRoot: true
             seccompProfile:
@@ -219,18 +219,18 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-      {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+      {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
       - name: config
         emptyDir: {}
-      {{ end }}
+      {{- end }}
       containers:
       - name: '{{ .Values.PRIVATE_SERVICE }}'
         image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
         volumeMounts:
-        {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+        {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
         - name: config
           mountPath: /envoy/config
-        {{ end }}
+        {{- end }}
         args:
         - /envoy/run.sh
         ports:
@@ -293,9 +293,9 @@ spec:
           periodSeconds: 2
           failureThreshold: 15
         securityContext:
-          {{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+          {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
           runAsGroup: 10001
-          {{ end }}
+          {{- end }}
           readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
           runAsNonRoot: true
           seccompProfile:
@@ -382,18 +382,18 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-      {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+      {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
       - name: config
         emptyDir: {}
-      {{ end }}
+      {{- end }}
       containers:
       - name: '{{ .Values.PUBLIC_SERVICE }}'
         image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
         volumeMounts:
-        {{ if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+        {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
         - name: config
           mountPath: /envoy/config
-        {{ end }}
+        {{- end }}
         args:
         - /envoy/run.sh
         ports:
@@ -456,9 +456,9 @@ spec:
           periodSeconds: 2
           failureThreshold: 15
         securityContext:
-          {{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+          {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
           runAsGroup: 10001
-          {{ end }}
+          {{- end }}
           readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
           runAsNonRoot: true
           seccompProfile:

@@ -9,15 +9,15 @@ metadata:
     app.kubernetes.io/managed-by: 'saasDeployer'
     deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
   annotations:
-    {{ if .Values.X509_AUTHENTICATION_ENABLED }}
+    {{- if .Values.X509_AUTHENTICATION_ENABLED }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
     nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
-    {{ if not (empty (.Values.BASELINE_ORIGIN)) }}
+    {{- if not (empty (.Values.BASELINE_ORIGIN)) }}
     nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.BASELINE_PROJ }}/x509'
-    {{ else }}
+    {{- else }}
     nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.NAMESPACE }}/x509'
-    {{ end }}
-    {{ end }}
+    {{- end }}
+    {{- end }}
     qubership.cloud/start.stage: '1'
     qubership.cloud/tenant.service.tenant.id: GENERAL
     qubership.cloud/tenant.service.show.name: Public Gateway
@@ -26,13 +26,13 @@ metadata:
 spec:
   ingressClassName: {{ if (default "" .Values.PEER_NAMESPACE) }}bg.mesh.qubership.org{{ else }}{{ .Values.INGRESS_CLASS }}{{ end }}
   rules:
-    {{ if .Values.PUBLIC_GATEWAY_ROUTE_HOST }}
+    {{- if .Values.PUBLIC_GATEWAY_ROUTE_HOST }}
     -   host: '{{ .Values.PUBLIC_GATEWAY_ROUTE_HOST }}'
-    {{ else if .Values.PUBLIC_GATEWAY_URL }}
+    {{- else if .Values.PUBLIC_GATEWAY_URL }}
     -   host: '{{ .Values.PUBLIC_GATEWAY_URL | trimPrefix "http://" | trimPrefix "https://" }}'
-    {{ else }}
+    {{- else }}
     -   host: 'public-gateway-{{ coalesce .Values.ORIGIN_NAMESPACE .Values.NAMESPACE }}.{{ .Values.CLOUD_PUBLIC_HOST }}'
-    {{ end }}
+    {{- end }}
         http:
           paths:
             - pathType: Prefix
@@ -43,7 +43,7 @@ spec:
                   port:
                     name: web
 ---
-{{ if eq .Values.GATEWAY_GRPC_INGRESS_ENABLED true }}
+{{- if eq .Values.GATEWAY_GRPC_INGRESS_ENABLED true }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -100,7 +100,7 @@ spec:
                   name: '{{ .Values.PRIVATE_SERVICE_NAME }}'
                   port:
                     name: web
-{{ end }}
+{{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -111,27 +111,27 @@ metadata:
     app.kubernetes.io/managed-by: 'saasDeployer'
     deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
   annotations:
-    {{ if .Values.X509_AUTHENTICATION_ENABLED }}
+    {{- if .Values.X509_AUTHENTICATION_ENABLED }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
     nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
-    {{ if not (empty (.Values.BASELINE_ORIGIN)) }}
+    {{- if not (empty (.Values.BASELINE_ORIGIN)) }}
     nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.BASELINE_PROJ }}/x509'
-    {{ else }}
+    {{- else }}
     nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.NAMESPACE }}/x509'
-    {{ end }}
-    {{ end }}
+    {{- end }}
+    {{- end }}
     qubership.cloud/start.stage: '1'
 {{ .Values.GW_INGRESS_ANNOTATIONS | indent 4 }}
 spec:
   ingressClassName: {{ if (default "" .Values.PEER_NAMESPACE) }}bg.mesh.qubership.org{{ else }}{{ .Values.INGRESS_CLASS }}{{ end }}
   rules:
-    {{ if .Values.PRIVATE_GATEWAY_ROUTE_HOST }}
+    {{- if .Values.PRIVATE_GATEWAY_ROUTE_HOST }}
     -   host: '{{ .Values.PRIVATE_GATEWAY_ROUTE_HOST }}'
-    {{ else if .Values.PRIVATE_GATEWAY_URL }}
+    {{- else if .Values.PRIVATE_GATEWAY_URL }}
     -   host: '{{ .Values.PRIVATE_GATEWAY_URL | trimPrefix "http://" | trimPrefix "https://" }}'
-    {{ else }}
+    {{- else }}
     -   host: 'private-gateway-{{ coalesce .Values.ORIGIN_NAMESPACE .Values.NAMESPACE }}.{{ .Values.CLOUD_PRIVATE_HOST }}'
-    {{ end }}
+    {{- end }}
         http:
           paths:
             - pathType: Prefix
@@ -142,7 +142,7 @@ spec:
                   port:
                     name: web
 ---
-{{ if .Values.DC_PRIVATE_GW_UMBRELLA_URL }}
+{{- if .Values.DC_PRIVATE_GW_UMBRELLA_URL }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -152,15 +152,15 @@ metadata:
     app.kubernetes.io/managed-by: 'saasDeployer'
     deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
   annotations:
-    {{ if .Values.X509_AUTHENTICATION_ENABLED }}
+    {{- if .Values.X509_AUTHENTICATION_ENABLED }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
     nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
-    {{ if not (empty (.Values.BASELINE_ORIGIN)) }}
+    {{- if not (empty (.Values.BASELINE_ORIGIN)) }}
     nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.BASELINE_PROJ }}/x509'
-    {{ else }}
+    {{- else }}
     nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.NAMESPACE }}/x509'
-    {{ end }}
-    {{ end }}
+    {{- end }}
+    {{- end }}
     qubership.cloud/start.stage: '1'
 spec:
   ingressClassName: {{ if (default "" .Values.PEER_NAMESPACE) }}bg.mesh.qubership.org{{ else }}{{ .Values.INGRESS_CLASS }}{{ end }}
@@ -175,9 +175,9 @@ spec:
                   name: '{{ .Values.PRIVATE_SERVICE_NAME }}'
                   port:
                     name: web
-{{ end }}
+{{- end }}
 ---
-{{ if .Values.DC_PUBLIC_GW_UMBRELLA_URL }}
+{{- if .Values.DC_PUBLIC_GW_UMBRELLA_URL }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -187,15 +187,15 @@ metadata:
     app.kubernetes.io/managed-by: 'saasDeployer'
     deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
   annotations:
-    {{ if .Values.X509_AUTHENTICATION_ENABLED }}
+    {{- if .Values.X509_AUTHENTICATION_ENABLED }}
     nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
     nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
-    {{ if not (empty (.Values.BASELINE_ORIGIN)) }}
+    {{- if not (empty (.Values.BASELINE_ORIGIN)) }}
     nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.BASELINE_PROJ }}/x509'
-    {{ else }}
+    {{- else }}
     nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.NAMESPACE }}/x509'
-    {{ end }}
-    {{ end }}
+    {{- end }}
+    {{- end }}
     qubership.cloud/start.stage: '1'
 spec:
   ingressClassName: {{ if (default "" .Values.PEER_NAMESPACE) }}bg.mesh.qubership.org{{ else }}{{ .Values.INGRESS_CLASS }}{{ end }}
@@ -210,8 +210,8 @@ spec:
                   name: '{{ .Values.PUBLIC_SERVICE_NAME }}'
                   port:
                     name: web
-{{ end }}
-{{ else }}
+{{- end }}
+{{- else }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -221,15 +221,15 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        {{ if .Values.X509_AUTHENTICATION_ENABLED }}
+        {{- if .Values.X509_AUTHENTICATION_ENABLED }}
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
         nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
-        {{ if not (empty (.Values.BASELINE_ORIGIN)) }}
+        {{- if not (empty (.Values.BASELINE_ORIGIN)) }}
         nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.BASELINE_PROJ }}/x509'
-        {{ else }}
+        {{- else }}
         nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.NAMESPACE }}/x509'
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
         qubership.cloud/start.stage: '1'
         qubership.cloud/tenant.service.tenant.id: GENERAL
         qubership.cloud/tenant.service.show.name: Public Gateway
@@ -238,13 +238,13 @@ metadata:
 spec:
     ingressClassName: {{ if (default "" .Values.PEER_NAMESPACE) }}bg.mesh.qubership.org{{ else }}{{ .Values.INGRESS_CLASS }}{{ end }}
     rules:
-    {{ if .Values.PUBLIC_GATEWAY_ROUTE_HOST }}
+    {{- if .Values.PUBLIC_GATEWAY_ROUTE_HOST }}
     -   host: '{{ .Values.PUBLIC_GATEWAY_ROUTE_HOST }}'
-    {{ else if .Values.PUBLIC_GATEWAY_URL }}
+    {{- else if .Values.PUBLIC_GATEWAY_URL }}
     -   host: '{{ .Values.PUBLIC_GATEWAY_URL | trimPrefix "http://" | trimPrefix "https://" }}'
-    {{ else }}
+    {{- else }}
     -   host: 'public-gateway-{{ coalesce .Values.ORIGIN_NAMESPACE .Values.NAMESPACE }}.{{ .Values.CLOUD_PUBLIC_HOST }}'
-    {{ end }}
+    {{- end }}
         http:
             paths:
             -   path: /
@@ -261,27 +261,27 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        {{ if .Values.X509_AUTHENTICATION_ENABLED }}
+        {{- if .Values.X509_AUTHENTICATION_ENABLED }}
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
         nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
-        {{ if not (empty (.Values.BASELINE_ORIGIN)) }}
+        {{- if not (empty (.Values.BASELINE_ORIGIN)) }}
         nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.BASELINE_PROJ }}/x509'
-        {{ else }}
+        {{- else }}
         nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.NAMESPACE }}/x509'
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
         qubership.cloud/start.stage: '1'
 {{ .Values.GW_INGRESS_ANNOTATIONS | indent 8 }}
 spec:
     ingressClassName: {{ if (default "" .Values.PEER_NAMESPACE) }}bg.mesh.qubership.org{{ else }}{{ .Values.INGRESS_CLASS }}{{ end }}
     rules:
-    {{ if .Values.PRIVATE_GATEWAY_ROUTE_HOST }}
+    {{- if .Values.PRIVATE_GATEWAY_ROUTE_HOST }}
     -   host: '{{ .Values.PRIVATE_GATEWAY_ROUTE_HOST }}'
-    {{ else if .Values.PRIVATE_GATEWAY_URL }}
+    {{- else if .Values.PRIVATE_GATEWAY_URL }}
     -   host: '{{ .Values.PRIVATE_GATEWAY_URL | trimPrefix "http://" | trimPrefix "https://"  }}'
-    {{ else }}
+    {{- else }}
     -   host: 'private-gateway-{{ coalesce .Values.ORIGIN_NAMESPACE .Values.NAMESPACE }}.{{ .Values.CLOUD_PRIVATE_HOST }}'
-    {{ end }}
+    {{- end }}
         http:
             paths:
             -   path: /
@@ -289,7 +289,7 @@ spec:
                     servicePort: web
                     serviceName: '{{ .Values.PRIVATE_SERVICE_NAME }}'
 ---
-{{ if eq .Values.GATEWAY_GRPC_INGRESS_ENABLED true }}
+{{- if eq .Values.GATEWAY_GRPC_INGRESS_ENABLED true }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -339,9 +339,9 @@ spec:
                 backend:
                   servicePort: web
                   serviceName: '{{ .Values.PUBLIC_SERVICE_NAME }}'
-{{ end }}
+{{- end }}
 ---
-{{ if .Values.DC_PRIVATE_GW_UMBRELLA_URL }}
+{{- if .Values.DC_PRIVATE_GW_UMBRELLA_URL }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -351,15 +351,15 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        {{ if .Values.X509_AUTHENTICATION_ENABLED }}
+        {{- if .Values.X509_AUTHENTICATION_ENABLED }}
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
         nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
-        {{ if not (empty (.Values.BASELINE_ORIGIN)) }}
+        {{- if not (empty (.Values.BASELINE_ORIGIN)) }}
         nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.BASELINE_PROJ }}/x509'
-        {{ else }}
+        {{- else }}
         nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.NAMESPACE }}/x509'
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
         qubership.cloud/start.stage: '1'
 spec:
     ingressClassName: {{ if (default "" .Values.PEER_NAMESPACE) }}bg.mesh.qubership.org{{ else }}{{ .Values.INGRESS_CLASS }}{{ end }}
@@ -371,9 +371,9 @@ spec:
                 backend:
                     servicePort: web
                     serviceName: '{{ .Values.PRIVATE_SERVICE_NAME }}'
-{{ end }}
+{{- end }}
 ---
-{{ if .Values.DC_PUBLIC_GW_UMBRELLA_URL }}
+{{- if .Values.DC_PUBLIC_GW_UMBRELLA_URL }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -383,15 +383,15 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        {{ if .Values.X509_AUTHENTICATION_ENABLED }}
+        {{- if .Values.X509_AUTHENTICATION_ENABLED }}
         nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: 'true'
         nginx.ingress.kubernetes.io/auth-tls-verify-client: 'optional_no_ca'
-        {{ if not (empty (.Values.BASELINE_ORIGIN)) }}
+        {{- if not (empty (.Values.BASELINE_ORIGIN)) }}
         nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.BASELINE_PROJ }}/x509'
-        {{ else }}
+        {{- else }}
         nginx.ingress.kubernetes.io/auth-tls-secret: '{{ .Values.NAMESPACE }}/x509'
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
         qubership.cloud/start.stage: '1'
 spec:
     ingressClassName: {{ if (default "" .Values.PEER_NAMESPACE) }}bg.mesh.qubership.org{{ else }}{{ .Values.INGRESS_CLASS }}{{ end }}
@@ -403,5 +403,5 @@ spec:
                 backend:
                     servicePort: web
                     serviceName: '{{ .Values.PUBLIC_SERVICE_NAME }}'
-{{ end }}
-{{ end }}
+{{- end }}
+{{- end }}
