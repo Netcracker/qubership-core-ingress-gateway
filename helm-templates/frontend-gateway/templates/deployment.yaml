@@ -163,7 +163,6 @@ spec:
     selector:
         matchLabels:
             name: '{{ .Values.INTERNAL_SERVICE }}'
-
 ---
 kind: Deployment
 apiVersion: apps/v1

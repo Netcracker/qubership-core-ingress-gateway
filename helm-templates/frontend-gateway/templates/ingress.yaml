@@ -251,7 +251,6 @@ spec:
                 backend:
                     servicePort: web
                     serviceName: '{{ .Values.PUBLIC_SERVICE_NAME }}'
-
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

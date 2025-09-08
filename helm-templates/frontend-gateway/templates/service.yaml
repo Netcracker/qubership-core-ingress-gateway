@@ -21,7 +21,6 @@ spec:
   {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
     clusterIP: None
   {{ end }}
-
 ---
 kind: Service
 apiVersion: v1

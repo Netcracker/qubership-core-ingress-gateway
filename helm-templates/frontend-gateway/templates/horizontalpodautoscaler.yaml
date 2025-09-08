@@ -59,7 +59,6 @@ spec:
           value: {{ .Values.HPA_SCALING_DOWN_PODS_VALUE }}
           periodSeconds: {{ .Values.HPA_SCALING_DOWN_PODS_PERIOD_SECONDS }}
 {{- end }}
-
 ---
 {{- if or (and (eq .Values.PAAS_PLATFORM "KUBERNETES") (ne (semver .Values.PAAS_VERSION | (semver "1.25").Compare) 1)) (and (eq .Values.PAAS_PLATFORM "OPENSHIFT") (ne (semver .Values.PAAS_VERSION | (semver "4.10").Compare) 1)) }} # k8s older than 1.25 or os older than 4.10 (both included)
 apiVersion: autoscaling/v2
@@ -121,7 +120,6 @@ spec:
           value: {{ .Values.HPA_SCALING_DOWN_PODS_VALUE }}
           periodSeconds: {{ .Values.HPA_SCALING_DOWN_PODS_PERIOD_SECONDS }}
 {{- end }}
-
 ---
 {{- if or (and (eq .Values.PAAS_PLATFORM "KUBERNETES") (ne (semver .Values.PAAS_VERSION | (semver "1.25").Compare) 1)) (and (eq .Values.PAAS_PLATFORM "OPENSHIFT") (ne (semver .Values.PAAS_VERSION | (semver "4.10").Compare) 1)) }} # k8s older than 1.25 or os older than 4.10 (both included)
 apiVersion: autoscaling/v2
