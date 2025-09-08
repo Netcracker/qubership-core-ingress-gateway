@@ -2,25 +2,25 @@
 kind: Service
 apiVersion: v1
 metadata:
+  name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
+  labels:
     name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
-    labels:
-      name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
-      app.kubernetes.io/name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
-      app.kubernetes.io/part-of: 'Cloud-Core'
-      app.kubernetes.io/managed-by: 'saasDeployer'
-      deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
-    annotations:
-        qubership.cloud/start.stage: '1'
+    app.kubernetes.io/name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
+    app.kubernetes.io/part-of: 'Cloud-Core'
+    app.kubernetes.io/managed-by: 'saasDeployer'
+    deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+  annotations:
+    qubership.cloud/start.stage: '1'
 spec:
-    ports:
-    - name: web
-      port: 8080
-      targetPort: 8080
-    selector:
-      name: '{{ .Values.INTERNAL_SERVICE }}'
-  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
-    clusterIP: None
-  {{ end }}
+  ports:
+  - name: web
+    port: 8080
+    targetPort: 8080
+  selector:
+    name: '{{ .Values.INTERNAL_SERVICE }}'
+{{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+  clusterIP: None
+{{ end }}
 ---
 kind: Service
 apiVersion: v1
@@ -40,7 +40,7 @@ spec:
     port: 8080
     targetPort: 8080
   selector:
-      name: '{{ .Values.PRIVATE_SERVICE }}'
+    name: '{{ .Values.PRIVATE_SERVICE }}'
 {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
   clusterIP: None
 {{ end }}
@@ -66,7 +66,7 @@ spec:
     port: 8080
     targetPort: 8080
   selector:
-      name: '{{ .Values.PUBLIC_SERVICE }}'
+    name: '{{ .Values.PUBLIC_SERVICE }}'
 {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
   clusterIP: None
 {{ end }}
