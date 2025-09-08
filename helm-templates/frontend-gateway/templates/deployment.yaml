@@ -18,29 +18,29 @@ metadata:
 spec:
   replicas: {{ .Values.REPLICAS | default 1 }}
   strategy:
-  {{- if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "recreate" }}
+    {{- if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "recreate" }}
     type: Recreate
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "best_effort_controlled_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "best_effort_controlled_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 0
       maxUnavailable: 80%
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "ramped_slow_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "ramped_slow_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
-  {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "custom_rollout" }}
+    {{- else if eq (default "" .Values.DEPLOYMENT_STRATEGY_TYPE) "custom_rollout" }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: {{ .Values.DEPLOYMENT_STRATEGY_MAXSURGE | default "25%" }}
       maxUnavailable: {{ .Values.DEPLOYMENT_STRATEGY_MAXUNAVAILABLE | default "25%" }}
-  {{- else }}
+    {{- else }}
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-  {{- end }}
+    {{- end }}
   template:
     metadata:
       labels:
@@ -54,93 +54,93 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-      {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
-      - name: config
-        emptyDir: {}
-      {{- end }}
+        {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+        - name: config
+          emptyDir: {}
+        {{- end }}
       containers:
-      - name: '{{ .Values.INTERNAL_SERVICE }}'
-        image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
-        volumeMounts:
-          {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
-          - name: config
-            mountPath: /envoy/config
-          {{- end }}
-          args:
-          - /envoy/run.sh
-          ports:
-          - name: web
-            containerPort: 8080
-            protocol: TCP
-          - name: admin
-            containerPort: 9901
-            protocol: TCP
-          env:
-          - name: SERVICE_NAME_VARIABLE
-            value: '{{ .Values.INTERNAL_SERVICE_NAME }}'
-          - name: LOG_LEVEL
-            value: '{{ lower .Values.LOG_LEVEL }}'
-          - name: CLOUD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: POD_HOSTNAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: IP_STACK
-            value: '{{ .Values.IP_STACK }}'
-          - name: IP_BIND
-            value: '{{ if eq .Values.IP_STACK "v6" }} "::" {{ else }} "0.0.0.0" {{ end }}'
-          - name: TRACING_ENABLED
-            value: '{{ .Values.TRACING_ENABLED }}'
-          - name: TRACING_HOST
-            value: '{{ .Values.TRACING_HOST }}'
-          - name: ENVOY_UID
-            value: '{{ .Values.ENVOY_UID }}'
-          - name: XDS_CLUSTER_HOST
-            value: '{{ .Values.XDS_CLUSTER_HOST }}'
-          - name: XDS_CLUSTER_PORT
-            value: '{{ .Values.XDS_CLUSTER_PORT }}'
-          - name: RUN_COREDNS
-            value: '{{ .Values.RUN_COREDNS }}'
-          - name: FACADE_GATEWAY
-            value: '{{ .Values.FACADE_GATEWAY }}'
-          resources:
-            requests:
-              cpu: '{{ .Values.CPU_REQUEST }}'
-              memory: '{{ .Values.INTERNAL_GW_MEMORY_LIMIT }}'
-            limits:
-              memory: '{{ .Values.INTERNAL_GW_MEMORY_LIMIT }}'
-              cpu: {{ .Values.INTERNAL_GW_CPU_LIMIT }}
-          livenessProbe:
-            httpGet:
-              path: '{{ .Values.HEALTHCHECK_PATH }}'
-              port: '{{ .Values.HEALTHCHECK_PORT }}'
-              scheme: 'HTTP'
-            initialDelaySeconds: 300
-            timeoutSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: '{{ .Values.READINESS_PATH }}'
-              port: '{{ .Values.HEALTHCHECK_PORT }}'
-              scheme: 'HTTP'
-            initialDelaySeconds: 1
-            timeoutSeconds: 30
-            periodSeconds: 2
-            failureThreshold: 15
-          securityContext:
-            {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
-            runAsGroup: 10001
+        - name: '{{ .Values.INTERNAL_SERVICE }}'
+          image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
+          volumeMounts:
+            {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+            - name: config
+              mountPath: /envoy/config
             {{- end }}
-            readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
+            args:
+            - /envoy/run.sh
+            ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
+            - name: admin
+              containerPort: 9901
+              protocol: TCP
+            env:
+            - name: SERVICE_NAME_VARIABLE
+              value: '{{ .Values.INTERNAL_SERVICE_NAME }}'
+            - name: LOG_LEVEL
+              value: '{{ lower .Values.LOG_LEVEL }}'
+            - name: CLOUD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: IP_STACK
+              value: '{{ .Values.IP_STACK }}'
+            - name: IP_BIND
+              value: '{{ if eq .Values.IP_STACK "v6" }} "::" {{ else }} "0.0.0.0" {{ end }}'
+            - name: TRACING_ENABLED
+              value: '{{ .Values.TRACING_ENABLED }}'
+            - name: TRACING_HOST
+              value: '{{ .Values.TRACING_HOST }}'
+            - name: ENVOY_UID
+              value: '{{ .Values.ENVOY_UID }}'
+            - name: XDS_CLUSTER_HOST
+              value: '{{ .Values.XDS_CLUSTER_HOST }}'
+            - name: XDS_CLUSTER_PORT
+              value: '{{ .Values.XDS_CLUSTER_PORT }}'
+            - name: RUN_COREDNS
+              value: '{{ .Values.RUN_COREDNS }}'
+            - name: FACADE_GATEWAY
+              value: '{{ .Values.FACADE_GATEWAY }}'
+            resources:
+              requests:
+                cpu: '{{ .Values.CPU_REQUEST }}'
+                memory: '{{ .Values.INTERNAL_GW_MEMORY_LIMIT }}'
+              limits:
+                memory: '{{ .Values.INTERNAL_GW_MEMORY_LIMIT }}'
+                cpu: {{ .Values.INTERNAL_GW_CPU_LIMIT }}
+            livenessProbe:
+              httpGet:
+                path: '{{ .Values.HEALTHCHECK_PATH }}'
+                port: '{{ .Values.HEALTHCHECK_PORT }}'
+                scheme: 'HTTP'
+              initialDelaySeconds: 300
+              timeoutSeconds: 30
+            readinessProbe:
+              httpGet:
+                path: '{{ .Values.READINESS_PATH }}'
+                port: '{{ .Values.HEALTHCHECK_PORT }}'
+                scheme: 'HTTP'
+              initialDelaySeconds: 1
+              timeoutSeconds: 30
+              periodSeconds: 2
+              failureThreshold: 15
+            securityContext:
+              {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+              runAsGroup: 10001
+              {{- end }}
+              readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+              runAsNonRoot: true
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
       topologySpreadConstraints:
         {{- if .Values.CLOUD_TOPOLOGIES }}
         {{- range $v := .Values.CLOUD_TOPOLOGIES }}
@@ -219,91 +219,91 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-      {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
-      - name: config
-        emptyDir: {}
-      {{- end }}
-      containers:
-      - name: '{{ .Values.PRIVATE_SERVICE }}'
-        image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
-        volumeMounts:
         {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
         - name: config
-          mountPath: /envoy/config
+          emptyDir: {}
         {{- end }}
-        args:
-        - /envoy/run.sh
-        ports:
-        - name: web
-          containerPort: 8080
-          protocol: TCP
-        - name: admin
-          containerPort: 9901
-          protocol: TCP
-        env:
-        - name: SERVICE_NAME_VARIABLE
-          value: '{{ .Values.PRIVATE_SERVICE_NAME }}'
-        - name: LOG_LEVEL
-          value: '{{ lower .Values.LOG_LEVEL }}'
-        - name: CLOUD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: POD_HOSTNAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: IP_STACK
-          value: '{{ .Values.IP_STACK }}'
-        - name: IP_BIND
-          value: '{{ if eq .Values.IP_STACK "v6" }} "::" {{ else }} "0.0.0.0" {{ end }}'
-        - name: TRACING_ENABLED
-          value: '{{ .Values.TRACING_ENABLED }}'
-        - name: TRACING_HOST
-          value: '{{ .Values.TRACING_HOST }}'
-        - name: ENVOY_UID
-          value: '{{ .Values.ENVOY_UID }}'
-        - name: XDS_CLUSTER_HOST
-          value: '{{ .Values.XDS_CLUSTER_HOST }}'
-        - name: XDS_CLUSTER_PORT
-          value: '{{ .Values.XDS_CLUSTER_PORT }}'
-        - name: RUN_COREDNS
-          value: '{{ .Values.RUN_COREDNS }}'
-        resources:
-          requests:
-            cpu: '{{ .Values.CPU_REQUEST }}'
-            memory: '{{ .Values.PRIVATE_GW_MEMORY_LIMIT }}'
-          limits:
-            memory: '{{ .Values.PRIVATE_GW_MEMORY_LIMIT }}'
-            cpu: {{ .Values.PRIVATE_GW_CPU_LIMIT }}
-        livenessProbe:
-          httpGet:
-            path: '{{ .Values.HEALTHCHECK_PATH }}'
-            port: '{{ .Values.HEALTHCHECK_PORT }}'
-            scheme: 'HTTP'
-          initialDelaySeconds: 300
-          timeoutSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: '{{ .Values.READINESS_PATH }}'
-            port: '{{ .Values.HEALTHCHECK_PORT }}'
-            scheme: 'HTTP'
-          initialDelaySeconds: 1
-          timeoutSeconds: 30
-          periodSeconds: 2
-          failureThreshold: 15
-        securityContext:
-          {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
-          runAsGroup: 10001
+      containers:
+        - name: '{{ .Values.PRIVATE_SERVICE }}'
+          image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
+          volumeMounts:
+          {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+          - name: config
+            mountPath: /envoy/config
           {{- end }}
-          readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
-          runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
+          args:
+          - /envoy/run.sh
+          ports:
+          - name: web
+            containerPort: 8080
+            protocol: TCP
+          - name: admin
+            containerPort: 9901
+            protocol: TCP
+          env:
+          - name: SERVICE_NAME_VARIABLE
+            value: '{{ .Values.PRIVATE_SERVICE_NAME }}'
+          - name: LOG_LEVEL
+            value: '{{ lower .Values.LOG_LEVEL }}'
+          - name: CLOUD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: IP_STACK
+            value: '{{ .Values.IP_STACK }}'
+          - name: IP_BIND
+            value: '{{ if eq .Values.IP_STACK "v6" }} "::" {{ else }} "0.0.0.0" {{ end }}'
+          - name: TRACING_ENABLED
+            value: '{{ .Values.TRACING_ENABLED }}'
+          - name: TRACING_HOST
+            value: '{{ .Values.TRACING_HOST }}'
+          - name: ENVOY_UID
+            value: '{{ .Values.ENVOY_UID }}'
+          - name: XDS_CLUSTER_HOST
+            value: '{{ .Values.XDS_CLUSTER_HOST }}'
+          - name: XDS_CLUSTER_PORT
+            value: '{{ .Values.XDS_CLUSTER_PORT }}'
+          - name: RUN_COREDNS
+            value: '{{ .Values.RUN_COREDNS }}'
+          resources:
+            requests:
+              cpu: '{{ .Values.CPU_REQUEST }}'
+              memory: '{{ .Values.PRIVATE_GW_MEMORY_LIMIT }}'
+            limits:
+              memory: '{{ .Values.PRIVATE_GW_MEMORY_LIMIT }}'
+              cpu: {{ .Values.PRIVATE_GW_CPU_LIMIT }}
+          livenessProbe:
+            httpGet:
+              path: '{{ .Values.HEALTHCHECK_PATH }}'
+              port: '{{ .Values.HEALTHCHECK_PORT }}'
+              scheme: 'HTTP'
+            initialDelaySeconds: 300
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: '{{ .Values.READINESS_PATH }}'
+              port: '{{ .Values.HEALTHCHECK_PORT }}'
+              scheme: 'HTTP'
+            initialDelaySeconds: 1
+            timeoutSeconds: 30
+            periodSeconds: 2
+            failureThreshold: 15
+          securityContext:
+            {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+            runAsGroup: 10001
+            {{- end }}
+            readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
       topologySpreadConstraints:
         {{- if .Values.CLOUD_TOPOLOGIES }}
         {{- range $v := .Values.CLOUD_TOPOLOGIES }}
@@ -382,91 +382,91 @@ spec:
         app.kubernetes.io/technology: 'cpp'
     spec:
       volumes:
-      {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
-      - name: config
-        emptyDir: {}
-      {{- end }}
-      containers:
-      - name: '{{ .Values.PUBLIC_SERVICE }}'
-        image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
-        volumeMounts:
         {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
         - name: config
-          mountPath: /envoy/config
+          emptyDir: {}
         {{- end }}
-        args:
-        - /envoy/run.sh
-        ports:
-        - name: web
-          containerPort: 8080
-          protocol: TCP
-        - name: admin
-          containerPort: 9901
-          protocol: TCP
-        env:
-        - name: SERVICE_NAME_VARIABLE
-          value: '{{ .Values.PUBLIC_SERVICE_NAME }}'
-        - name: LOG_LEVEL
-          value: '{{ lower .Values.LOG_LEVEL }}'
-        - name: CLOUD_NAMESPACE
-          valueFrom:
-              fieldRef:
-                  fieldPath: metadata.namespace
-        - name: POD_HOSTNAME
-          valueFrom:
-              fieldRef:
-                  fieldPath: metadata.name
-        - name: IP_STACK
-          value: '{{ .Values.IP_STACK }}'
-        - name: IP_BIND
-          value: '{{ if eq .Values.IP_STACK "v6" }} "::" {{ else }} "0.0.0.0" {{ end }}'
-        - name: TRACING_ENABLED
-          value: '{{ .Values.TRACING_ENABLED }}'
-        - name: TRACING_HOST
-          value: '{{ .Values.TRACING_HOST }}'
-        - name: ENVOY_UID
-          value: '{{ .Values.ENVOY_UID }}'
-        - name: XDS_CLUSTER_HOST
-          value: '{{ .Values.XDS_CLUSTER_HOST }}'
-        - name: XDS_CLUSTER_PORT
-          value: '{{ .Values.XDS_CLUSTER_PORT }}'
-        - name: RUN_COREDNS
-          value: '{{ .Values.RUN_COREDNS }}'
-        resources:
-          requests:
-            cpu: '{{ .Values.CPU_REQUEST }}'
-            memory: '{{ .Values.PUBLIC_GW_MEMORY_LIMIT }}'
-          limits:
-            memory: '{{ .Values.PUBLIC_GW_MEMORY_LIMIT }}'
-            cpu: {{ .Values.PUBLIC_GW_CPU_LIMIT }}
-        livenessProbe:
-          httpGet:
-            path: '{{ .Values.HEALTHCHECK_PATH }}'
-            port: '{{ .Values.HEALTHCHECK_PORT }}'
-            scheme: 'HTTP'
-          initialDelaySeconds: 300
-          timeoutSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: '{{ .Values.READINESS_PATH }}'
-            port: '{{ .Values.HEALTHCHECK_PORT }}'
-            scheme: 'HTTP'
-          initialDelaySeconds: 1
-          timeoutSeconds: 30
-          periodSeconds: 2
-          failureThreshold: 15
-        securityContext:
-          {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
-          runAsGroup: 10001
+      containers:
+        - name: '{{ .Values.PUBLIC_SERVICE }}'
+          image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
+          volumeMounts:
+          {{- if and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+          - name: config
+            mountPath: /envoy/config
           {{- end }}
-          readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
-          runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
+          args:
+          - /envoy/run.sh
+          ports:
+          - name: web
+            containerPort: 8080
+            protocol: TCP
+          - name: admin
+            containerPort: 9901
+            protocol: TCP
+          env:
+          - name: SERVICE_NAME_VARIABLE
+            value: '{{ .Values.PUBLIC_SERVICE_NAME }}'
+          - name: LOG_LEVEL
+            value: '{{ lower .Values.LOG_LEVEL }}'
+          - name: CLOUD_NAMESPACE
+            valueFrom:
+                fieldRef:
+                    fieldPath: metadata.namespace
+          - name: POD_HOSTNAME
+            valueFrom:
+                fieldRef:
+                    fieldPath: metadata.name
+          - name: IP_STACK
+            value: '{{ .Values.IP_STACK }}'
+          - name: IP_BIND
+            value: '{{ if eq .Values.IP_STACK "v6" }} "::" {{ else }} "0.0.0.0" {{ end }}'
+          - name: TRACING_ENABLED
+            value: '{{ .Values.TRACING_ENABLED }}'
+          - name: TRACING_HOST
+            value: '{{ .Values.TRACING_HOST }}'
+          - name: ENVOY_UID
+            value: '{{ .Values.ENVOY_UID }}'
+          - name: XDS_CLUSTER_HOST
+            value: '{{ .Values.XDS_CLUSTER_HOST }}'
+          - name: XDS_CLUSTER_PORT
+            value: '{{ .Values.XDS_CLUSTER_PORT }}'
+          - name: RUN_COREDNS
+            value: '{{ .Values.RUN_COREDNS }}'
+          resources:
+            requests:
+              cpu: '{{ .Values.CPU_REQUEST }}'
+              memory: '{{ .Values.PUBLIC_GW_MEMORY_LIMIT }}'
+            limits:
+              memory: '{{ .Values.PUBLIC_GW_MEMORY_LIMIT }}'
+              cpu: {{ .Values.PUBLIC_GW_CPU_LIMIT }}
+          livenessProbe:
+            httpGet:
+              path: '{{ .Values.HEALTHCHECK_PATH }}'
+              port: '{{ .Values.HEALTHCHECK_PORT }}'
+              scheme: 'HTTP'
+            initialDelaySeconds: 300
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: '{{ .Values.READINESS_PATH }}'
+              port: '{{ .Values.HEALTHCHECK_PORT }}'
+              scheme: 'HTTP'
+            initialDelaySeconds: 1
+            timeoutSeconds: 30
+            periodSeconds: 2
+            failureThreshold: 15
+          securityContext:
+            {{- if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+            runAsGroup: 10001
+            {{- end }}
+            readOnlyRootFilesystem: {{ and .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED (eq .Values.PAAS_PLATFORM "KUBERNETES") }}
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
       topologySpreadConstraints:
         {{- if .Values.CLOUD_TOPOLOGIES }}
         {{- range $v := .Values.CLOUD_TOPOLOGIES }}
