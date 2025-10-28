@@ -8,9 +8,9 @@ metadata:
       app.kubernetes.io/name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
       app.kubernetes.io/part-of: 'Cloud-Core'
       app.kubernetes.io/managed-by: 'saasDeployer'
-      deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+      deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        qubership.cloud/start.stage: '1'
+      netcracker.cloud/start.stage: '1'
 spec:
     ports:
     -   name: web
@@ -31,9 +31,9 @@ metadata:
       app.kubernetes.io/name: '{{ .Values.PRIVATE_SERVICE_NAME }}'
       app.kubernetes.io/part-of: 'Cloud-Core'
       app.kubernetes.io/managed-by: 'saasDeployer'
-      deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+      deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        qubership.cloud/start.stage: '1'
+      netcracker.cloud/start.stage: '1'
 spec:
     ports:
     -   name: web
@@ -54,12 +54,12 @@ metadata:
       app.kubernetes.io/name: '{{ .Values.PUBLIC_SERVICE_NAME }}'
       app.kubernetes.io/part-of: 'Cloud-Core'
       app.kubernetes.io/managed-by: 'saasDeployer'
-      deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+      deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        qubership.cloud/tenant.service.alias.prefix: public-gateway
-        qubership.cloud/tenant.service.show.name: Public Gateway
-        qubership.cloud/tenant.service.show.description: Api Gateway to access public API
-        qubership.cloud/start.stage: '1'
+      netcracker.cloud/tenant.service.alias.prefix: public-gateway
+      netcracker.cloud/tenant.service.show.name: Public Gateway
+      netcracker.cloud/tenant.service.show.description: Api Gateway to access public API
+      netcracker.cloud/start.stage: '1'
 spec:
     ports:
     -   name: web

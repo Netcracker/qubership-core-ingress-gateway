@@ -1,7 +1,7 @@
 ---
 {{ if not .Values.SKIP_EGRESS_GATEWAY_CREATION }}
 kind: FacadeService
-apiVersion: qubership.org/v1alpha
+apiVersion: netcracker.com/v1alpha
 metadata:
     name: "{{ .Values.EGRESS_GATEWAY_SERVICE_NAME }}"
     namespace: "{{ .Values.NAMESPACE }}"
@@ -10,7 +10,7 @@ metadata:
         app.kubernetes.io/managed-by: 'saasDeployer'
         app.kubernetes.io/processed-by-operator: facade-operator
         app.kubernetes.io/version: '{{ .Values.ARTIFACT_DESCRIPTOR_VERSION }}'
-        deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+        deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
         deployer.cleanup/allow: "true"
 spec:
     port: 8080
