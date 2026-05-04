@@ -16,11 +16,14 @@ spec:
     -   name: web
         port: 8080
         targetPort: 8080
+{{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
+{{- else}}
     selector:
         name: '{{ .Values.INTERNAL_SERVICE }}'
-  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
     clusterIP: None
-  {{ end }}
+  {{- end }}
+{{- end }}  
 ---
 kind: Service
 apiVersion: v1
@@ -39,11 +42,16 @@ spec:
     -   name: web
         port: 8080
         targetPort: 8080
+{{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
     selector:
-        name: '{{ .Values.PRIVATE_SERVICE }}'
-  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+      gateway.networking.k8s.io/gateway-name: private-gateway-istio
+{{- else}}
+    selector:
+      name: '{{ .Values.PRIVATE_SERVICE }}'
+  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
     clusterIP: None
-  {{ end }}
+  {{- end }}
+{{- end }}  
 ---
 kind: Service
 apiVersion: v1
@@ -65,8 +73,13 @@ spec:
     -   name: web
         port: 8080
         targetPort: 8080
+{{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
     selector:
-        name: '{{ .Values.PUBLIC_SERVICE }}'
-  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+      gateway.networking.k8s.io/gateway-name: public-gateway-istio
+{{- else}}
+    selector:
+      name: '{{ .Values.PUBLIC_SERVICE }}'
+  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
     clusterIP: None
-  {{ end }}
+  {{- end }}
+{{- end }}

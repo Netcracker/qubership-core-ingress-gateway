@@ -759,7 +759,16 @@
       "title": "The EGRESS_GW_MEMORY_LIMIT schema",
       "internal": true,
       "envSpecific": true
-    }
+    },
+    "SERVICE_MESH_TYPE": {
+      "$id": "#/properties/SERVICE_MESH_TYPE",
+      "type": "string",
+      "title": "The SERVICE_MESH_TYPE schema",
+      "description": "Type of service mesh. Allowed values: 'Istio' or 'Core'.",
+      "enum": ["Istio", "Core"],
+      "default": "Core",
+      "internal": true
+    }    
   },
   "additionalProperties": true
 }
