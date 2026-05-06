@@ -44,7 +44,7 @@ spec:
         targetPort: 8080
 {{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
     selector:
-      gateway.networking.k8s.io/gateway-name: private-gateway
+      gateway.networking.k8s.io/gateway-name: '{{ .Values.ISTIO_PRIVATE_GATEWAY_NAME }}'
 {{- else}}
     selector:
       name: '{{ .Values.PRIVATE_SERVICE }}'
@@ -75,7 +75,7 @@ spec:
         targetPort: 8080
 {{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
     selector:
-      gateway.networking.k8s.io/gateway-name: public-gateway
+      gateway.networking.k8s.io/gateway-name: '{{ .Values.ISTIO_PUBLIC_GATEWAY_NAME }}'
 {{- else}}
     selector:
       name: '{{ .Values.PUBLIC_SERVICE }}'
