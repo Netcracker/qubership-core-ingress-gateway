@@ -759,6 +759,31 @@
       "title": "The EGRESS_GW_MEMORY_LIMIT schema",
       "internal": true,
       "envSpecific": true
+    },
+    "SERVICE_MESH_TYPE": {
+      "$id": "#/properties/SERVICE_MESH_TYPE",
+      "type": "string",
+      "title": "The SERVICE_MESH_TYPE schema",
+      "description": "Service mesh type. Use `Core` for Cloud Core Mesh or `Istio` for Istio Ambient Mesh.",
+      "enum": ["Istio", "Core"],
+      "default": "Core",
+      "internal": true
+    },
+    "ISTIO_PUBLIC_GATEWAY_NAME": {
+      "$id": "#/properties/ISTIO_PUBLIC_GATEWAY_NAME",
+      "type": "string",
+      "title": "The ISTIO_PUBLIC_GATEWAY_NAME schema",
+      "description": "Name of the public Istio gateway.",
+      "default": "public-gateway",
+      "internal": true
+    },
+    "ISTIO_PRIVATE_GATEWAY_NAME": {
+      "$id": "#/properties/ISTIO_PRIVATE_GATEWAY_NAME",
+      "type": "string",
+      "title": "The ISTIO_PRIVATE_GATEWAY_NAME schema",
+      "description": "Name of the private Istio gateway.",
+      "default": "private-gateway",
+      "internal": true
     }
   },
   "additionalProperties": true

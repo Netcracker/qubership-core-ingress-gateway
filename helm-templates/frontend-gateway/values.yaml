@@ -41,3 +41,6 @@ RUN_COREDNS: false
 FACADE_GATEWAY: false
 
 K8S_SERVICE_TYPE: 'HEADLESS'
+
+# ============== Mesh Service Type ============================
+SERVICE_MESH_TYPE : "Core"
