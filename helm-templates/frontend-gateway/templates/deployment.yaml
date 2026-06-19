@@ -12,9 +12,9 @@ metadata:
         app.kubernetes.io/part-of: 'Cloud-Core'
         app.kubernetes.io/managed-by: 'saasDeployer'
         app.kubernetes.io/technology: 'cpp'
-        deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+        deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        qubership.cloud/start.stage: '1'
+        netcracker.cloud/start.stage: '1'
 spec:
     replicas: {{ .Values.REPLICAS | default 1 }}
     strategy:
@@ -164,7 +164,6 @@ spec:
     selector:
         matchLabels:
             name: '{{ .Values.INTERNAL_SERVICE }}'
-
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -179,9 +178,9 @@ metadata:
         app.kubernetes.io/part-of: 'Cloud-Core'
         app.kubernetes.io/managed-by: 'saasDeployer'
         app.kubernetes.io/technology: 'cpp'
-        deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+        deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        qubership.cloud/start.stage: '1'
+        netcracker.cloud/start.stage: '1'
 spec:
     replicas: {{ .Values.REPLICAS | default 1 }}
     strategy:
@@ -343,9 +342,9 @@ metadata:
         app.kubernetes.io/part-of: 'Cloud-Core'
         app.kubernetes.io/managed-by: 'saasDeployer'
         app.kubernetes.io/technology: 'cpp'
-        deployment.qubership.org/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+        deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-        qubership.cloud/start.stage: '1'
+        netcracker.cloud/start.stage: '1'
 spec:
     replicas: {{ .Values.REPLICAS | default 1 }}
     strategy:
