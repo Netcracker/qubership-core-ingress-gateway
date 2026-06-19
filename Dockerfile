@@ -17,6 +17,9 @@ RUN mkdir -p /envoy/config && \
     chown 10001:0 /envoy/config && \
     chmod -R ug+rwx /envoy
 
+# Set non-root user appuser for image run and all the following CMD command
+USER 10001
+
 EXPOSE 8080 9901
 
 VOLUME /envoy/config
