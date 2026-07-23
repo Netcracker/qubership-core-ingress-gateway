@@ -1,29 +1,58 @@
+{{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
 ---
 kind: Service
 apiVersion: v1
 metadata:
-    name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
-    labels:
-      name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
-      app.kubernetes.io/name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
-      app.kubernetes.io/part-of: 'Cloud-Core'
-      app.kubernetes.io/managed-by: 'saasDeployer'
-      deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
-    annotations:
-      netcracker.cloud/start.stage: '1'
+  name: '{{ .Values.PUBLIC_SERVICE_NAME }}'
+  labels:
+    name: '{{ .Values.PUBLIC_SERVICE_NAME }}'
+    app.kubernetes.io/name: '{{ .Values.PUBLIC_SERVICE_NAME }}'
+    app.kubernetes.io/part-of: 'Cloud-Core'
+    app.kubernetes.io/managed-by: 'saasDeployer'
+    deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+  annotations:
+    netcracker.cloud/tenant.service.alias.prefix: public-gateway
+    netcracker.cloud/tenant.service.show.name: Public Gateway
+    netcracker.cloud/tenant.service.show.description: Api Gateway to access public API
+    netcracker.cloud/start.stage: '1'
 spec:
-    ports:
-    -   name: web
-        port: 8080
-        targetPort: 8080
-{{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
-{{- else}}
-    selector:
-        name: '{{ .Values.INTERNAL_SERVICE }}'
-  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
-    clusterIP: None
-  {{- end }}
-{{- end }}  
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    gateway.networking.k8s.io/gateway-name: '{{ .Values.ISTIO_PUBLIC_GATEWAY_NAME }}'
+  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+  clusterIP: None
+  {{ end }}
+  type: ClusterIP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: '{{ .Values.PRIVATE_SERVICE_NAME }}'
+  labels:
+    name: '{{ .Values.PRIVATE_SERVICE_NAME }}'
+    app.kubernetes.io/name: '{{ .Values.PRIVATE_SERVICE_NAME }}'
+    app.kubernetes.io/part-of: 'Cloud-Core'
+    app.kubernetes.io/managed-by: 'saasDeployer'
+    deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+  annotations:
+    netcracker.cloud/start.stage: '1'
+spec:
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    gateway.networking.k8s.io/gateway-name: '{{ .Values.ISTIO_PRIVATE_GATEWAY_NAME }}'
+  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+  clusterIP: None
+  {{ end }}
+  type: ClusterIP
+{{- else }}
 ---
 kind: Service
 apiVersion: v1
@@ -36,22 +65,17 @@ metadata:
       app.kubernetes.io/managed-by: 'saasDeployer'
       deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
     annotations:
-      netcracker.cloud/start.stage: '1'
+        netcracker.cloud/start.stage: '1'
 spec:
     ports:
     -   name: web
         port: 8080
         targetPort: 8080
-{{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
     selector:
-      gateway.networking.k8s.io/gateway-name: '{{ .Values.ISTIO_PRIVATE_GATEWAY_NAME }}'
-{{- else}}
-    selector:
-      name: '{{ .Values.PRIVATE_SERVICE }}'
-  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+        name: '{{ .Values.PRIVATE_SERVICE }}'
+  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
     clusterIP: None
-  {{- end }}
-{{- end }}  
+  {{ end }}
 ---
 kind: Service
 apiVersion: v1
@@ -73,13 +97,32 @@ spec:
     -   name: web
         port: 8080
         targetPort: 8080
-{{- if eq .Values.SERVICE_MESH_TYPE "Istio" }}
     selector:
-      gateway.networking.k8s.io/gateway-name: '{{ .Values.ISTIO_PUBLIC_GATEWAY_NAME }}'
-{{- else}}
-    selector:
-      name: '{{ .Values.PUBLIC_SERVICE }}'
-  {{- if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+        name: '{{ .Values.PUBLIC_SERVICE }}'
+  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
     clusterIP: None
-  {{- end }}
+  {{ end }}
 {{- end }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
+    labels:
+      name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
+      app.kubernetes.io/name: '{{ .Values.INTERNAL_SERVICE_NAME }}'
+      app.kubernetes.io/part-of: 'Cloud-Core'
+      app.kubernetes.io/managed-by: 'saasDeployer'
+      deployment.netcracker.com/sessionId: '{{ .Values.DEPLOYMENT_SESSION_ID }}'
+    annotations:
+        netcracker.cloud/start.stage: '1'
+spec:
+    ports:
+    -   name: web
+        port: 8080
+        targetPort: 8080
+    selector:
+        name: '{{ .Values.INTERNAL_SERVICE }}'
+  {{ if  eq .Values.K8S_SERVICE_TYPE "HEADLESS" }}
+    clusterIP: None
+  {{ end }}

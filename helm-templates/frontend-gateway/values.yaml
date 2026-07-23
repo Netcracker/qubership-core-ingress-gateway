@@ -16,6 +16,8 @@ PRIVATE_SERVICE: "private-frontend-gateway"
 PRIVATE_SERVICE_NAME: "private-gateway-service"
 EGRESS_GATEWAY_SERVICE: "egress-gateway-gateway"
 EGRESS_GATEWAY_SERVICE_NAME: "egress-gateway"
+ISTIO_PUBLIC_GATEWAY_NAME: "public-gateway"
+ISTIO_PRIVATE_GATEWAY_NAME: "private-gateway"
 GW_INGRESS_ANNOTATIONS: ""
 DC_PUBLIC_GW_UMBRELLA_URL: ''
 DC_PRIVATE_GW_UMBRELLA_URL: ''
@@ -40,9 +42,10 @@ XDS_CLUSTER_PORT: 15010
 RUN_COREDNS: false
 FACADE_GATEWAY: false
 
-K8S_SERVICE_TYPE: 'HEADLESS'
+K8S_SERVICE_TYPE: 'CLUSTER_IP'
 
-# ============== Mesh Service Type ============================
-SERVICE_MESH_TYPE : "Core"
-ISTIO_PUBLIC_GATEWAY_NAME: 'public-gateway'
-ISTIO_PRIVATE_GATEWAY_NAME: 'private-gateway'
+SERVICE_MESH_TYPE: 'Core'
+
+GATEWAY_SYSTEM_NAME: 'default-external-gateway'
+GATEWAY_SYSTEM_NAMESPACE: 'gateway-system'
+GATEWAY_SYSTEM_TYPE: 'legacy-ingress'
