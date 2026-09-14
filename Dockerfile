@@ -1,5 +1,5 @@
 FROM coredns/coredns:1.14.6@sha256:900f9c109f7a33545d3c811516e8376df9019147b750f5ce3e254468769176ea
-FROM envoyproxy/envoy:v1.38.3@sha256:5f7c43e1147412fdb3af578c651c67478a3df818eae89d2261e707e06c209cdb
+FROM envoyproxy/envoy:v1.39.1@sha256:57e14a549d7bd43c8d3f6d03e8cfa653e037d4b38e133acd9b54f38c524401b4
 COPY --chown=10001:0 --from=0 /coredns /usr/bin/coredns
 ADD --chown=10001:0 CoreDNSFile /CoreDNSFile
 
