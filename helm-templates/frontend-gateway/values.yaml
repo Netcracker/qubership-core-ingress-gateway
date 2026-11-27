@@ -4,6 +4,7 @@ CLOUD_TOPOLOGY_KEY: kubernetes.io/hostname
 READONLY_CONTAINER_FILE_SYSTEM_ENABLED: true
 IMAGE_REPOSITORY: 'ghcr.io/netcracker/qubership-core-ingress-gateway'
 SERVICE_NAME: ingress-gateway
+CORE_TPL_MS_CONSULACL_ENABLED: false
 
 HEALTHCHECK_PATH: "/ready"
 READINESS_PATH: "/ready"
